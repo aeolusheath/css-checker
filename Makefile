@@ -1,19 +1,19 @@
 BIN=go
-VERSION := v0.4.1
+VERSION := v0.4.5
 RELEASE_NOTE := "Add Path Ignores, Settings Yaml and Similarity Threshold"
 .PHONY: build test-models lint revive vet
 
 GO_PACKAGES ?= $(shell go list ./...)
 
 git-tag:
-	git tag -a $(VERSION) -m $(RELEASE_NOTE)
-	git push github $(VERSION)
+    git tag -a $(VERSION) -m $(RELEASE_NOTE)
+	git push origin $(VERSION)
 
 release: git-tag
 	goreleaser release
 
 build:
-	$(BIN) build -o "dist/css-checker"
+	$(BIN) build -o "dist/yh-css-checker"
 
 test-models:
 	gotestsum --format testname --
