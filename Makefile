@@ -7,7 +7,7 @@ GO_PACKAGES ?= $(shell go list ./...)
 
 git-tag:
 	git tag -a $(VERSION) -m $(RELEASE_NOTE)
-	git push origin $(VERSION)
+	git push origin $(VERSION) --force
 
 release: git-tag
 	goreleaser release
