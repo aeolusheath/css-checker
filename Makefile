@@ -6,14 +6,14 @@ RELEASE_NOTE := "Add Path Ignores, Settings Yaml and Similarity Threshold"
 GO_PACKAGES ?= $(shell go list ./...)
 
 git-tag:
-    git tag -a $(VERSION) -m $(RELEASE_NOTE)
+	git tag -a $(VERSION) -m $(RELEASE_NOTE)
 	git push origin $(VERSION)
 
 release: git-tag
 	goreleaser release
 
 build:
-	$(BIN) build -o "dist/yh-css-checker"
+	$(BIN) build -o "dist/css-checker"
 
 test-models:
 	gotestsum --format testname --
