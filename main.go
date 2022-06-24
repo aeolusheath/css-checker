@@ -27,8 +27,21 @@ const (
 )
 
 const (
+	// InfoColor ...bold
+	hInfoColor = "Blue"
+	// NoticeColor ... bold
+	hNoticeColor = "Cyan"
+	// WarningColor ...bold
+	hWarningColor = "Yellow"
+	// ErrorColor ...bold
+	hErrorColor = "Red"
+	// DebugColor ...
+	hDebugColor = "Cyan"
+)
+
+const (
 	// Version for current version of css-checker
-	Version = "0.4.1"
+	Version = "0.4.3"
 )
 
 // Params setting parameters
@@ -47,6 +60,7 @@ type Params struct {
 	Unused              bool     `yaml:"unused"`
 	Unrestricted        bool     `yaml:"unrestricted"`
 	ConfigPath          string   `yaml:"config"`
+	ToFile				bool	 `yaml:"to-file"`
 }
 
 var params = Params{
@@ -58,6 +72,7 @@ var params = Params{
 	Path:             ".",
 	LongScriptLength: 20,
 	Ignores:          []string{},
+	ToFile:			  true,
 }
 
 // StyleSection ...
@@ -233,10 +248,21 @@ func ParamsParse() {
 }
 
 func main() {
+	// 创建输出文件
+	createOutuputFile()
+	// 是否将结果写到文件
+	wtf := params.ToFile
+	// 获取输出的html文件
+	hf := getHtmlFile()
+
+
 	t1 := time.Now()
 	ParamsParse()
 	if params.Version {
-		fmt.Printf("Version: v%s\n", Version)
+		vMsg := fmt.Sprintf("<p>Version: v%s</p>\n", Version)
+		// fmt.Printf("Version: v%s\n", Version)
+		fmt.Printf(vMsg)
+		writeToFile(hf, vMsg, wtf)
 		return
 	}
 
@@ -260,11 +286,18 @@ func main() {
 	}
 	files, err := WalkMatch(params.Path, WalkMatchOptions{patterns: patternsToCheck, ignores: params.Ignores, unrestricted: params.Unrestricted})
 	if err != nil {
+		eMsg := fmt.Sprintf("<p>No css files found at given path: %s</p>", params.Path)
 		fmt.Printf(ErrorColor, fmt.Sprintf("No css files found at given path: %s", params.Path))
+		writeToFile(hf, eMsg, wtf)
 		return
 	}
 	fmt.Println("\nChecking starts. this may take seconds.")
+
+	csf := fmt.Sprintf("<p style='color: %s'>Found %d css files. Begin to scan.</p>", hNoticeColor , len(files))
 	fmt.Printf(NoticeColor, fmt.Sprintf("Found %d css files. Begin to scan.\n", len(files)))
+	writeToFile(hf, csf, wtf)
+
+
 
 	// CSS Parsing
 	for _, path := range files {
@@ -272,7 +305,10 @@ func main() {
 		longScriptList = append(longScriptList, longScripts...)
 		colorScriptList = append(colorScriptList, colorScripts...)
 	}
+	fcs := fmt.Sprintf("<p style='color: %s'>Found %d css sections. Begin to compare.</p><br/><br/>", hDebugColor, len(styleList))
 	fmt.Printf(DebugColor, fmt.Sprintf("Found %d css sections. Begin to compare.\n", len(styleList)))
+	writeToFile(hf, fcs, wtf)
+
 
 	// Begin Checking
 	dupScripts, dupColors, dupSections := []ScriptSummary{}, []ScriptSummary{}, []SectionSummary{}
@@ -280,49 +316,81 @@ func main() {
 	notFoundSections := []StyleSection{}
 	if params.LongScriptsCheck {
 		dupScripts = DupScriptsChecker(longScriptList)
-		LongScriptsWarning(dupScripts)
+		LongScriptsWarning(dupScripts, hf, wtf)
 	}
 	if params.ColorsCheck {
 		dupColors = DupScriptsChecker(colorScriptList)
-		ColorScriptsWarning(dupColors)
+		ColorScriptsWarning(dupColors, hf, wtf)
 	}
 	if params.SectionsCheck {
 		dupSections = DupStyleSectionsChecker(styleList)
-		StyleSectionsWarning(dupSections)
+		StyleSectionsWarning(dupSections, hf, wtf)
 	}
 	if params.SimilarityCheck {
 		similaritySummarys = getSimilarSections()
-		SimilarSectionsWarning(similaritySummarys, params.SimilarityThreshold)
+		SimilarSectionsWarning(similaritySummarys, params.SimilarityThreshold, hf, wtf)
 	}
 
 	if params.Unused {
 		notFoundSections = UnusedClassesChecker()
-		UnusedScriptsWarning(notFoundSections)
+		UnusedScriptsWarning(notFoundSections, hf, wtf)
 	}
 
 	t2 := time.Now()
 
 	// Results ...
 	fmt.Printf(DebugColor, fmt.Sprintf("\nCss Scan Completed.\n"))
+	csc := fmt.Sprintf("<p style='color: %s'> Css Scan Completed. </p>", hDebugColor)
+	writeToFile(hf, csc, wtf)
 	if params.LongScriptsCheck && len(dupScripts) > 0 {
+		fdl := fmt.Sprintf("<p style='color: %s'>Found %s duplicated long script values</p>", hWarningColor,  fmt.Sprintf("<span style='color: %s'>%d</span>", hErrorColor, len(dupScripts)))
 		fmt.Printf(WarningColor, fmt.Sprintf("Found %s duplicated long script values\n", fmt.Sprintf(ErrorColor, fmt.Sprintf("%d", len(dupScripts)))))
+		writeToFile(hf, fdl, wtf)
+
 	}
 	if params.ColorsCheck && len(dupColors) > 0 {
+		fdc := fmt.Sprintf("<p style='color: %s'>Found %s duplicated colors</p>", hWarningColor,fmt.Sprintf("<span style='color: %s'>%d</span>", hErrorColor, len(dupColors)))
 		fmt.Printf(WarningColor, fmt.Sprintf("Found %s duplicated colors\n", fmt.Sprintf(ErrorColor, fmt.Sprintf("%d", len(dupColors)))))
+		writeToFile(hf, fdc, wtf)
 	}
 	if params.SectionsCheck && len(dupSections) > 0 {
+		fdcc := fmt.Sprintf("<p style='color: %s'>Found %s duplicated css classes</p>", hWarningColor, fmt.Sprintf("<span style='color: %s'>%d</span>", hErrorColor, len(dupSections)))
 		fmt.Printf(WarningColor, fmt.Sprintf("Found %s duplicated css classes\n", fmt.Sprintf(ErrorColor, fmt.Sprintf("%d", len(dupSections)))))
+		writeToFile(hf, fdcc, wtf)
 	}
 	if params.SimilarityCheck && len(similaritySummarys) > 0 {
+		fsc := fmt.Sprintf("<p style='color: %s'>Found %s similar css classes (%d%% <= sim < 100%%)</p>", hWarningColor, fmt.Sprintf("<span style='color: %s'>%d</span>", hErrorColor, len(similaritySummarys)), params.SimilarityThreshold)
 		fmt.Printf(WarningColor, fmt.Sprintf("Found %s similar css classes (%d%% <= sim < 100%%)\n", fmt.Sprintf(ErrorColor, fmt.Sprintf("%d", len(similaritySummarys))), params.SimilarityThreshold))
+		writeToFile(hf, fsc, wtf)
 	}
 	if params.Unused && len(notFoundSections) > 0 {
+		nrfc := fmt.Sprintf("<p style='color: %s'>Found %s css classes not referred in your js/jsx/ts/tsx/htm/html code</p>", hWarningColor,  fmt.Sprintf("<span style='color: %s'>%d</span>",hErrorColor, len(notFoundSections)))
 		fmt.Printf(WarningColor, fmt.Sprintf("Found %s css classes not referred in your js/jsx/ts/tsx/htm/html code\n", fmt.Sprintf(ErrorColor, fmt.Sprintf("%d", len(notFoundSections)))))
+		writeToFile(hf, nrfc, wtf)
 	}
 
 	diff := t2.Sub(t1)
 	if !found {
+		nfy := "<p>Checking completed, you can also create a css-checker.yaml file to customize your scan. </p>"
 		fmt.Println("Checking completed, you can also create a css-checker.yaml file to customize your scan.")
+		writeToFile(hf, nfy, wtf)
 	}
+	ct := "<p>Time consumed (not including printing process): " +  shortDur(diff) + "</p>"
 	fmt.Println("Time consumed (not including printing process): ", diff)
+	writeToFile(hf, ct, wtf)
+
+	writeToFile(hf, "</body></html>", wtf)
+	
+}
+
+
+func shortDur(d time.Duration) string {
+    s := d.String()
+    if strings.HasSuffix(s, "m0s") {
+        s = s[:len(s)-2]
+    }
+    if strings.HasSuffix(s, "h0m") {
+        s = s[:len(s)-2]
+    }
+    return s
 }
