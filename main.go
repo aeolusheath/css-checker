@@ -41,7 +41,7 @@ const (
 
 const (
 	// Version for current version of css-checker
-	Version = "0.4.5"
+	Version = "0.4.6"
 )
 
 // Params setting parameters
