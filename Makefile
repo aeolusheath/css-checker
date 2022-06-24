@@ -10,7 +10,7 @@ git-tag:
 	git push origin $(VERSION) --force
 
 release: git-tag
-	goreleaser release
+	goreleaser release --rm-dist
 
 build:
 	$(BIN) build -o "dist/css-checker"
