@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ruilisi.com/">
-    <img alt="CSS-CHECKER" src="https://assets.ruilisi.com/cgULF9oHro3e1kSHXTfZYA==" width="211"/>
+    <img alt="CSS-CHECKER" src="" width="211"/>
   </a>
 </p>
 <h1 align="center">CSS Checker - Less is More</h1>
@@ -21,20 +21,26 @@ Similarity check, duplication check, colors check, long lines warning are suppor
 
 <p align="right"><em>See more on <a href="https://xiemala.com/s/gaSXqA">Wiki</a></em></p>
 
+
+## Tip
+fork from https://github.com/ruilisi/css-checker
+
+changed: 输出结果到本地文件
+
 ## Install
 
 #### Using Go：
 
 ```
-go install github.com/ruilisi/css-checker@latest
+go install github.com/aeolusheath/css-checker@latest
 ```
 
-(With go version before 1.17, use `go get github.com/ruilisi/css-checker`). Or download from [releases](https://github.com/ruilisi/css-checker/releases)
+(With go version before 1.17, use `go get github.com/ruilisi/css-checker`). Or download from [releases](https://github.com/aeolusheath/css-checker/releases)
 
 #### Using npm：
 
 ```
-npm install -g css-checker-kit
+npm install -g css-checker-kit --registry=http://npm.yonghuivip.com
 ```
 
 ## Usage
@@ -46,7 +52,7 @@ npm install -g css-checker-kit
 ```
 css-checker
 ```
-
+W
 - (Beta Feature: styled components check): `css-checker -styled`
 
 ![DEMO](https://assets.ruilisi.com/css-checker-demo.gif)
