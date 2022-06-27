@@ -1,6 +1,6 @@
 {
   "name": "css-checker-kit",
-  "version": "0.4.2",
+  "version": "0.4.7",
   "description": "Find and Reduce Similar & Duplicated CSS Scripts",
   "main": "index.js",
   "scripts": {
@@ -10,22 +10,22 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ruilisi/css-checker.git"
+    "url": "git+https://github.com/aeolusheath/css-checker.git"
   },
   "keywords": ["css", "code-quality", "cicd", "redundancy-analysis"],
   "author": "ruilisi",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ruilisi/css-checker/issues"
+    "url": "https://github.com/aeolusheath/css-checker"
   },
-  "homepage": "https://github.com/ruilisi/css-checker#readme",
+  "homepage": "https://github.com/aeolusheath/css-checker#readme",
   "dependencies": {
     "@gzuidhof/go-npm": "^0.1.13"
   },
   "goBinary": {
     "name": "css-checker",
     "path": "./bin",
-    "url": "https://github.com/ruilisi/css-checker/releases/download/v0.4.1/css-checker_0.4.1_{{platform}}_{{arch}}.tar.gz"
+    "url": "https://github.com/aeolusheath/css-checker/releases/download/v0.4.7/css-checker_0.4.7_{{platform}}_{{arch}}.tar.gz"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
