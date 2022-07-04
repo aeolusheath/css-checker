@@ -31,7 +31,7 @@ func SimilarSectionsWarning(similaritySummarys []SimilaritySummary, sim int, f *
 						writeToFile(f, fmt.Sprintf("<span style='color: %s'> &nbsp;&nbsp; %s </span><br/>", hDebugColor, fmt.Sprintln(line)), wtf)
 					} else {
 						fmt.Println(line)
-						writeToFile(f, "<p>" + line + "</p>", wtf)
+						writeToFile(f, "<p>  &nbsp;&nbsp; " + line + "</p>", wtf)
 					}
 				}
 				fmt.Printf(DebugColor, "}\n\n")

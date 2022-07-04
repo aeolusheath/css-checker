@@ -61,6 +61,7 @@ type Params struct {
 	Unrestricted        bool     `yaml:"unrestricted"`
 	ConfigPath          string   `yaml:"config"`
 	ToFile				bool	 `yaml:"to-file"`
+	OutputFileName      string   `yaml:"file-name"`
 }
 
 var params = Params{
@@ -72,7 +73,8 @@ var params = Params{
 	Path:             ".",
 	LongScriptLength: 20,
 	Ignores:          []string{},
-	ToFile:			  true,
+	ToFile:			  true, // 是否输出到文件
+	OutputFileName:   "css-checker.html", // 默认的输出文件名字
 }
 
 // StyleSection ...
@@ -226,6 +228,9 @@ func ParamsParse() {
 	flag.BoolVar(&params.Unused, "unused", false, "whether to check unused classes (Beta)")
 	flag.BoolVar(&params.Version, "version", false, "prints current version and exits")
 	flag.StringVar(&params.ConfigPath, "config", "", "set configuration file, check github.com/ruilisi/css-checker for details")
+	flag.BoolVar(&params.ToFile, "to-file", true, "output result to a html file. default value is true")
+	flag.StringVar(&params.OutputFileName, "file-name", "css-checker.html", "set output file name. default is css-checker.html")
+
 	flag.Parse()
 	if len(ignorePathsString) > 0 {
 		params.Ignores = strings.Split(ignorePathsString, ",")
@@ -248,16 +253,16 @@ func ParamsParse() {
 }
 
 func main() {
+	t1 := time.Now()
+	ParamsParse()
+
 	// 创建输出文件
-	createOutuputFile()
+	createOutuputFile(params.OutputFileName)
 	// 是否将结果写到文件
 	wtf := params.ToFile
 	// 获取输出的html文件
-	hf := getHtmlFile()
+	hf := getHtmlFile(params.OutputFileName)
 
-
-	t1 := time.Now()
-	ParamsParse()
 	if params.Version {
 		vMsg := fmt.Sprintf("<p>Version: v%s</p>\n", Version)
 		// fmt.Printf("Version: v%s\n", Version)

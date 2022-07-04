@@ -26,17 +26,15 @@ func checkFileIsExist(filename string) bool {
 }
 
 // 创建一个输出文件
-func createOutuputFile() {
-    // Using Create() function
-	// htmlFile, e2 := os.Create("css-check.html")
-	// if e2 != nil {
-	// 	log.Fatal(e2)
-	// }
-	// htmlFile.Close()
+func createOutuputFile(fileName string) {
 
+	var f = "css-check.html"
+	if (len(fileName) != 0) {
+		f = fileName
+	}
 
 	// 初始化这个html文件
-	file, err := os.OpenFile("css-check.html", os.O_WRONLY|os.O_CREATE, 0666)
+	file, err := os.OpenFile(f, os.O_WRONLY|os.O_CREATE, 0666)
 
 	// 关闭文件句柄
 	defer file.Close()
@@ -57,8 +55,8 @@ func createOutuputFile() {
 
 
 // 获取输出文件引用
-func getHtmlFile() *os.File{
-	file,_ := os.OpenFile("css-check.html", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func getHtmlFile(fileName string) *os.File{
+	file,_ := os.OpenFile(fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	return file
 }
 
