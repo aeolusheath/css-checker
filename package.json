@@ -1,6 +1,6 @@
 {
   "name": "css-checker-kit",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Find and Reduce Similar & Duplicated CSS Scripts",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   "goBinary": {
     "name": "css-checker",
     "path": "./bin",
-    "url": "https://github.com/aeolusheath/css-checker/releases/download/v0.4.7/css-checker_0.4.7_{{platform}}_{{arch}}.tar.gz"
+    "url": "https://github.com/aeolusheath/css-checker/releases/download/v0.4.8/css-checker_0.4.8_{{platform}}_{{arch}}.tar.gz"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.1",
